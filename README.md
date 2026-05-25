@@ -25,5 +25,44 @@ This project is intentionally designed to be extensible, maintainable, and repre
 - `docs` – architecture and design notes
 - `tests` – unit and integration tests
 
-## How to Run (Placeholder)
-> Setup and execution instructions will be added once the initial API and domain layers are implemented.
+## How to Run
+
+### Prerequisites
+- Python 3.11+
+
+### 1. Create and activate a virtual environment
+```bash
+python -m venv .venv
+source .venv/bin/activate        # Mac/Linux
+.venv\Scripts\activate           # Windows
+```
+
+### 2. Install dependencies
+```bash
+pip install -e packages/domain
+pip install -e apps/api
+```
+
+### 3. Start the API server
+```bash
+uvicorn api.main:app --reload --app-dir apps/api
+```
+
+The API will be available at `http://127.0.0.1:8000`.
+Interactive docs (Swagger UI) at `http://127.0.0.1:8000/docs`.
+
+### 4. Run the tests
+```bash
+pytest tests/
+```
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/quotes` | Create a new quote |
+| `GET` | `/quotes/{quote_id}` | Get a quote by ID |
+| `POST` | `/quotes/{quote_id}/lines` | Add a line item |
+| `DELETE` | `/quotes/{quote_id}/lines/{line_id}` | Remove a line item |
+| `POST` | `/quotes/{quote_id}/finalize` | Finalize a quote |
+| `GET` | `/health` | Health check |

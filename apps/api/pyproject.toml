@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cpq-api"
+version = "0.1.0"
+description = "FastAPI layer for the NextGen CPQ quoting system"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "cpq-domain"
+]
+
+[tool.setuptools]
+package-dir = {"" = "."}

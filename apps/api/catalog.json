@@ -1,0 +1,68 @@
+{
+  "products": [
+    {
+      "product_id": "prod-001",
+      "name": "Cloud Storage",
+      "skus": [
+        {
+          "sku_id": "sku-storage-basic",
+          "name": "Basic Storage",
+          "base_price": { "currency": "USD", "amount": 49.00 },
+          "attributes": [
+            {
+              "key": "storage_gb",
+              "label": "Storage (GB)",
+              "type": "NUMBER",
+              "required": true,
+              "enum_values": null
+            }
+          ]
+        },
+        {
+          "sku_id": "sku-storage-pro",
+          "name": "Pro Storage",
+          "base_price": { "currency": "USD", "amount": 99.00 },
+          "attributes": [
+            {
+              "key": "storage_gb",
+              "label": "Storage (GB)",
+              "type": "NUMBER",
+              "required": true,
+              "enum_values": null
+            },
+            {
+              "key": "region",
+              "label": "Region",
+              "type": "ENUM",
+              "required": true,
+              "enum_values": ["us-east", "us-west", "eu-central"]
+            }
+          ]
+        }
+      ],
+      "add_on_product_ids": ["prod-002"]
+    },
+    {
+      "product_id": "prod-002",
+      "name": "Support Package",
+      "skus": [
+        {
+          "sku_id": "sku-support-standard",
+          "name": "Standard Support",
+          "base_price": { "currency": "USD", "amount": 29.00 },
+          "attributes": [],
+          "add_on_product_ids": []
+        },
+        {
+          "sku_id": "sku-support-premium",
+          "name": "Premium Support",
+          "base_price": { "currency": "USD", "amount": 79.00 },
+          "attributes": [],
+          "add_on_product_ids": []
+        }
+      ],
+      "add_on_product_ids": []
+    }
+  ],
+  "bundles": []
+}
