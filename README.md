@@ -45,7 +45,7 @@ pip install -e apps/api
 
 ### 3. Start the API server
 ```bash
-uvicorn api.main:app --reload --app-dir apps/api
+uvicorn api.main:app --reload --app-dir apps
 ```
 
 The API will be available at `http://127.0.0.1:8000`.
