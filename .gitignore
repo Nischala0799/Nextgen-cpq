@@ -20,3 +20,6 @@ env/
 dist/
 build/
 *.egg-info/
+
+# Database
+*.db

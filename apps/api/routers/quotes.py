@@ -37,7 +37,7 @@ from api.dependencies import (
     get_catalog,
     get_dependency_rules,
     get_incompatibility_rules,
-    get_quote_store,
+    get_repository,
 )
 
 router = APIRouter(prefix="/quotes", tags=["quotes"])
@@ -102,8 +102,7 @@ def _quote_to_response(quote: Quote) -> QuoteResponse:
 
 def _get_quote_or_404(quote_id: str) -> Quote:
     """Look up a quote by ID or raise a 404."""
-    store = get_quote_store()
-    quote = store.get(quote_id)
+    quote = get_repository().get(quote_id)
     if not quote:
         raise HTTPException(status_code=404, detail=f"Quote '{quote_id}' not found.")
     return quote
@@ -119,7 +118,7 @@ def create_new_quote(request: CreateQuoteRequest) -> QuoteResponse:
     Create a new empty quote in DRAFT status.
     """
     quote = create_quote(customer_id=request.customer_id)
-    get_quote_store()[quote.quote_id] = quote
+    get_repository().save(quote)
     return _quote_to_response(quote)
 
 
@@ -173,7 +172,7 @@ def add_line_to_quote(quote_id: str, request: AddLineRequest) -> QuoteResponse:
             detail=[{"rule": e.rule, "message": e.message} for e in result.errors],
         )
 
-    get_quote_store()[quote_id] = result.quote
+    get_repository().save(result.quote)
     return _quote_to_response(result.quote)
 
 
@@ -192,7 +191,7 @@ def remove_line_from_quote(quote_id: str, line_id: str) -> QuoteResponse:
             detail=[{"rule": e.rule, "message": e.message} for e in result.errors],
         )
 
-    get_quote_store()[quote_id] = result.quote
+    get_repository().save(result.quote)
     return _quote_to_response(result.quote)
 
 
@@ -211,5 +210,5 @@ def finalize(quote_id: str) -> QuoteResponse:
             detail=[{"rule": e.rule, "message": e.message} for e in result.errors],
         )
 
-    get_quote_store()[quote_id] = result.quote
+    get_repository().save(result.quote)
     return _quote_to_response(result.quote)

@@ -4,7 +4,7 @@ dependencies.py
 Shared FastAPI dependencies.
 
 Provides:
-  - In-memory quote store
+  - QuoteRepository backed by SQLite
   - Catalog loaded from catalog.json
   - Incompatibility and dependency rules (hardcoded for now)
 """
@@ -13,23 +13,19 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict
 
 from cpq_domain.config_rules import DependencyRule, IncompatibilityRule
-from cpq_domain.models import Catalog, Quote
+from cpq_domain.models import Catalog
+from api.database import get_session
+from api.repository import QuoteRepository
 
 # ---------------------------------------------------------------------------
-# In-memory quote store
+# Quote repository
 # ---------------------------------------------------------------------------
 
-# Quotes are stored as a dict of quote_id -> Quote.
-# Resets on every server restart — Phase 2 will introduce persistence.
-_quote_store: Dict[str, Quote] = {}
-
-
-def get_quote_store() -> Dict[str, Quote]:
-    """Return the shared in-memory quote store."""
-    return _quote_store
+def get_repository() -> QuoteRepository:
+    """Return a QuoteRepository backed by a new SQLAlchemy session."""
+    return QuoteRepository(get_session())
 
 
 # ---------------------------------------------------------------------------

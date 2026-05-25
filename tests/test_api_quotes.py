@@ -12,19 +12,44 @@ Run with: pytest tests/test_api_quotes.py -v
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
+import api.database as db_module
 from api.main import app
-from api.dependencies import get_quote_store
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
 
 @pytest.fixture(autouse=True)
-def clear_store():
-    get_quote_store().clear()
+def use_test_db():
+    """Replace the module-level SQLAlchemy engine with an in-memory SQLite DB.
+
+    Each test gets a clean database; the production DB file is never touched.
+    """
+    # StaticPool forces all connections to reuse the same underlying SQLite
+    # connection, so tables created by create_all() are visible to every session.
+    test_engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    db_module.Base.metadata.create_all(bind=test_engine)
+
+    original_engine = db_module.engine
+    original_session = db_module.SessionLocal
+
+    db_module.engine = test_engine
+    db_module.SessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=test_engine
+    )
+
     yield
-    get_quote_store().clear()
+
+    db_module.engine = original_engine
+    db_module.SessionLocal = original_session
 
 
 @pytest.fixture
@@ -244,10 +269,10 @@ class TestAddLine:
 class TestRemoveLine:
 
     def _add_and_get_line_id(self, client, quote_id):
-        resp = add_line(client, quote_id, BASIC_LINE)
-        # line_id is not exposed in QuoteResponse; fetch via the store directly
-        from api.dependencies import get_quote_store
-        quote = get_quote_store()[quote_id]
+        add_line(client, quote_id, BASIC_LINE)
+        # line_id is not exposed in QuoteResponse; fetch via the repository
+        from api.dependencies import get_repository
+        quote = get_repository().get(quote_id)
         return quote.versions[-1].lines[0].selection.line_id
 
     def test_remove_existing_line_returns_200(self, client):
