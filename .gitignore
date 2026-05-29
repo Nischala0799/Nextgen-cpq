@@ -23,3 +23,7 @@ build/
 
 # Database
 *.db
+
+# Node
+node_modules/
+apps/ui/dist/

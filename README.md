@@ -12,16 +12,15 @@ This project is intentionally designed to be extensible, maintainable, and repre
 - Discount logic (manual and rule-based)
 - Quote management with versioning and full price breakdown
 
-## Technical Stack (Initial)
-- Language: Python 3.11+
-- API Framework: FastAPI
-- Data Validation: Pydantic
-- Testing: pytest
-- Storage: In-memory (initial phase)
+## Technical Stack
+- **Backend:** Python 3.11+, FastAPI, SQLAlchemy, Pydantic, SQLite
+- **Frontend:** React, Vite, Tailwind CSS
+- **Testing:** pytest (116 tests)
 
 ## Project Structure
 - `packages/domain` – core CPQ domain models and business logic
 - `apps/api` – FastAPI application exposing CPQ functionality
+- `apps/ui` – React + Vite frontend
 - `docs` – architecture and design notes
 - `tests` – unit and integration tests
 
@@ -29,6 +28,7 @@ This project is intentionally designed to be extensible, maintainable, and repre
 
 ### Prerequisites
 - Python 3.11+
+- Node.js 18+
 
 ### 1. Create and activate a virtual environment
 ```bash
@@ -51,7 +51,16 @@ uvicorn api.main:app --reload --app-dir apps
 The API will be available at `http://127.0.0.1:8000`.
 Interactive docs (Swagger UI) at `http://127.0.0.1:8000/docs`.
 
-### 4. Run the tests
+### 4. Start the UI (in a separate terminal)
+```bash
+cd apps/ui
+npm install
+npm run dev
+```
+
+The UI will be available at `http://localhost:5173`.
+
+### 5. Run the tests
 ```bash
 pytest tests/
 ```
